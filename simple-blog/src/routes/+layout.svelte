@@ -1,12 +1,11 @@
 <script lang="ts">
+	import Header from '$lib/components/Header.svelte';
 	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
-
-	let { children } = $props();
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
-{@render children()}
+<div class="min-h-screen bg-background font-sans antialiased">
+	<Header />
+	<main class="container mx-auto px-4 py-8">
+		<slot />
+	</main>
+</div>

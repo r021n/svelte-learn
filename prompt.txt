@@ -1,0 +1,23 @@
+.prettierrc
+
+{
+	"useTabs": true,
+	"tabWidth": 2,
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"printWidth": 80,
+	"semi": true,
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	],
+	"tailwindStylesheet": "./src/app.css"
+}
+
+saya punya konfigurasi prettier svelte seperti di atas. kenapa saya mendapat pesan
+""
