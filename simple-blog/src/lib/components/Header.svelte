@@ -11,6 +11,12 @@
 			<li>
 				<a href="/blog" class="transition-colors hover:text-primary">Blog</a>
 			</li>
+			<li>
+				<a
+					href="/posts"
+					class="font-medium transition-colors hover:text-primary">Posts</a
+				>
+			</li>
 		</ul>
 	</nav>
 </header>
