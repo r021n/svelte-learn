@@ -2,7 +2,7 @@
 	let { data } = $props();
 </script>
 
-<h1 class="mb-6 text-3xl font-bold">Blog Kami</h1>
+<h1 class="mb-6 text-3xl font-bold dark:text-white">Blog Kami</h1>
 <ul class="space-y-4">
 	<li>
 		<a

@@ -14,7 +14,7 @@
 </svelte:head>
 
 <section class="py-8">
-	<h1 class="mb-6 text-3xl font-bold">Postingan Terbaru</h1>
+	<h1 class="mb-6 text-3xl font-bold dark:text-white">Postingan Terbaru</h1>
 
 	{#if data.posts.length === 0}
 		<p class="text-muted-foreground">Tidak ada postingan ditemukan.</p>

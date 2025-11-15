@@ -1,5 +1,9 @@
 <script lang="ts">
-	let { title, description } = $props();
+	let {
+		title,
+		description,
+		children,
+	}: { title: string; description?: string; children: any } = $props();
 </script>
 
 <div class="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
@@ -7,5 +11,5 @@
 	{#if description}
 		<p class="mb-4 text-sm text-muted-foreground">{description}</p>
 	{/if}
-	<slot />
+	{@render children()}
 </div>
