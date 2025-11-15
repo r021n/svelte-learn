@@ -3,10 +3,12 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { z } from 'zod';
 
-export const load: PageServerLoad = async ({ fetch }) => {
+export const load: PageServerLoad = async ({ fetch, setHeaders }) => {
 	try {
-		const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
-			next: { revalidate: 3600 },
+		const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+
+		setHeaders({
+			'cache-control': 'max-age=3600',
 		});
 
 		if (!res.ok) {
@@ -23,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch }) => {
 	} catch (err) {
 		console.error('Load error:', err);
 		if (err instanceof z.ZodError) {
-			throw error(500, 'Data tidak valid: ' + err.errors[0].message);
+			throw error(500, 'Data tidak valid: ' + err.issues[0].message);
 		}
 		throw error(500, 'Terjadi kesalahan saat memuat postingan');
 	}
