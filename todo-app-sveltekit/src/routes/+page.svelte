@@ -6,6 +6,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Button } from '$lib/components/ui/button';
 	import { fade, slide } from 'svelte/transition';
+	import { Trash2 } from 'lucide-svelte';
 
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from './$types';
@@ -19,6 +20,38 @@
 				console.error(result.data?.message);
 			}
 		};
+	};
+
+	let editingId: string | null = null;
+
+	const handleDelete = (id: string) => {
+		todoStore.deleteTodo(id);
+	};
+
+	const handleToggle = (id: string) => {
+		todoStore.toggleTodo(id);
+	};
+
+	const startEditing = (id: string) => {
+		editingId = id;
+	};
+
+	const saveEdit = (id: string, event: Event) => {
+		const input = event.target as HTMLInputElement;
+		const newText = input.value.trim();
+
+		if (newText.length > 0) {
+			todoStore.updateTodoText(id, newText);
+		}
+		editingId = null;
+	};
+
+	const handleKeydown = (id: string, event: KeyboardEvent) => {
+		if (event.key === 'Enter') {
+			saveEdit(id, event);
+		} else if (event.key === 'Escape') {
+			editingId = null;
+		}
 	};
 </script>
 
@@ -61,13 +94,35 @@
 			{#each $todoStore as todo (todo.id)}
 				<div transition:slide|local={{ duration: 200 }}>
 					<Card>
-						<CardContent class="flex items-center p-4">
-							<Checkbox id={todo.id} checked={todo.completed} />
-							<Label
-								for={todo.id}
-								class="ml-3 flex-1 cursor-pointer text-base font-medium {todo.completed
-									? 'text-muted-foreground line-through'
-									: ''}">{todo.text}</Label
+						<CardContent class="flex items-center p-4 gap-3">
+							<Checkbox
+								id={todo.id}
+								checked={todo.completed}
+								onCheckedChange={() => handleToggle(todo.id)}
+							/>
+							<div>
+								{#if editingId === todo.id}
+									<Input
+										value={todo.text}
+										class="h-8"
+										autofocus
+										onblur={(e) => saveEdit(todo.id, e)}
+										onkeydown={(e) => handleKeydown(todo.id, e)}
+									/>
+								{:else}
+									<Label
+										for={todo.id}
+										class="cursor-pointer text-base font-medium block w-full py-1
+										{todo.completed ? 'text-muted-foreground line-through' : ''}
+										">{todo.text}</Label
+									>
+								{/if}
+							</div>
+							<Button
+								variant="ghost"
+								size="icon"
+								class="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+								onclick={() => handleDelete(todo.id)}><Trash2 class="h-4 w-4" /></Button
 							>
 						</CardContent>
 					</Card>

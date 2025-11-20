@@ -36,9 +36,14 @@ const toggleTodo = (id: string) => {
 	);
 };
 
+const updateTodoText = (id: string, newText: string) => {
+	update((todos) => todos.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo)));
+};
+
 export const todoStore = {
 	subscribe,
 	addTodo,
 	deleteTodo,
-	toggleTodo
+	toggleTodo,
+	updateTodoText
 };
