@@ -8,7 +8,7 @@
 <div class="min-h-screen bg-background text-foreground">
 	<main class="flex flex-col items-center w-full">
 		<div class="w-full max-w-2xl p-4">
-			<slot />
+			{@render children()}
 		</div>
 	</main>
 </div>
