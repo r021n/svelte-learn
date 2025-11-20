@@ -3,7 +3,23 @@
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label';
+	import { Input } from '$lib/components/ui/input';
+	import { Button } from '$lib/components/ui/button';
 	import { fade, slide } from 'svelte/transition';
+
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from './$types';
+
+	const handleSubmit: SubmitFunction = () => {
+		return async ({ result, update }) => {
+			if (result.type === 'success' && result.data) {
+				todoStore.addTodo(result.data.text as string);
+				await update();
+			} else if (result.type === 'failure') {
+				console.error(result.data?.message);
+			}
+		};
+	};
 </script>
 
 <div class="w-full space-y-6">
@@ -11,6 +27,26 @@
 		<h1 class="text-2xl font-bold tracking-tight">Daftar Tugas</h1>
 		<span class="text-sm text-muted-foreground">{$todoStore.length} tugas</span>
 	</div>
+
+	<Card>
+		<CardContent class="p-4">
+			<form
+				method="POST"
+				action="?/create"
+				use:enhance={handleSubmit}
+				class="flex w-full items-center space-x-2"
+			>
+				<Input
+					type="text"
+					name="text"
+					placeholder="apa yang ingin anda lakukan"
+					class="flex-1"
+					autocomplete="off"
+				/>
+				<Button type="submit">Tambah</Button>
+			</form>
+		</CardContent>
+	</Card>
 
 	{#if $todoStore.length === 0}
 		<div
