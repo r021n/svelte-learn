@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { todoStore } from '$lib/stores/todoStore';
+	import { todoStore, filterStore, filteredTodos } from '$lib/stores/todoStore';
 	import { Card, CardContent } from '$lib/components/ui/card';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Label } from '$lib/components/ui/label';
@@ -53,12 +53,18 @@
 			editingId = null;
 		}
 	};
+
+	export let data;
+
+	$: {
+		filterStore.set(data.filter);
+	}
 </script>
 
 <div class="w-full space-y-6">
 	<div class="flex items-center justify-between">
 		<h1 class="text-2xl font-bold tracking-tight">Daftar Tugas</h1>
-		<span class="text-sm text-muted-foreground">{$todoStore.length} tugas</span>
+		<span class="text-sm text-muted-foreground">{$filteredTodos.length} tugas</span>
 	</div>
 
 	<Card>
@@ -67,7 +73,7 @@
 				method="POST"
 				action="?/create"
 				use:enhance={handleSubmit}
-				class="flex w-full items-center space-x-2"
+				class="flex items-center w-full space-x-2"
 			>
 				<Input
 					type="text"
@@ -81,20 +87,43 @@
 		</CardContent>
 	</Card>
 
-	{#if $todoStore.length === 0}
+	<div class="flex pb-2 space-x-2">
+		<Button href="/?filter=all" variant={$filterStore === 'all' ? 'default' : 'outline'} size="sm"
+			>Semua</Button
+		>
+		<Button
+			href="/?filter=active"
+			variant={$filterStore === 'active' ? 'default' : 'outline'}
+			size="sm"
+		>
+			Aktif
+		</Button>
+		<Button
+			href="/?filter=completed"
+			variant={$filterStore === 'completed' ? 'default' : 'outline'}
+			size="sm"
+		>
+			Selesai
+		</Button>
+	</div>
+
+	{#if $filteredTodos.length === 0}
 		<div
 			in:fade
-			class="flex flex-col items-center justify-center space-y-2 rounded-lg border border-dashed p-8 text-center animate-in fade-in-50"
+			class="flex flex-col items-center justify-center p-8 space-y-2 text-center border border-dashed rounded-lg animate-in fade-in-50"
 		>
-			<p class="text-lg font-medium">Belum ada tugas</p>
-			<p class="text-sm text-muted-foreground">Mulai dengan menambahkan tugas baru di bawah ini</p>
+			{#if $filterStore === 'all'}
+				Belum ada tugas. Tambahkan satu!
+			{:else}
+				Tidak ada tugas di filter ini.
+			{/if}
 		</div>
 	{:else}
 		<div class="space-y-3">
-			{#each $todoStore as todo (todo.id)}
+			{#each $filteredTodos as todo (todo.id)}
 				<div transition:slide|local={{ duration: 200 }}>
 					<Card>
-						<CardContent class="flex items-center p-4 gap-3">
+						<CardContent class="flex items-center gap-3 p-4">
 							<Checkbox
 								id={todo.id}
 								checked={todo.completed}
@@ -114,7 +143,8 @@
 										for={todo.id}
 										class="cursor-pointer text-base font-medium block w-full py-1
 										{todo.completed ? 'text-muted-foreground line-through' : ''}
-										">{todo.text}</Label
+										"
+										ondblclick={() => startEditing(todo.id)}>{todo.text}</Label
 									>
 								{/if}
 							</div>
@@ -122,7 +152,7 @@
 								variant="ghost"
 								size="icon"
 								class="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
-								onclick={() => handleDelete(todo.id)}><Trash2 class="h-4 w-4" /></Button
+								onclick={() => handleDelete(todo.id)}><Trash2 class="w-4 h-4" /></Button
 							>
 						</CardContent>
 					</Card>
