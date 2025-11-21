@@ -151,7 +151,7 @@
 							<Button
 								variant="ghost"
 								size="icon"
-								class="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+								class="ml-auto text-destructive hover:text-destructive/90 hover:bg-destructive/10"
 								onclick={() => handleDelete(todo.id)}><Trash2 class="w-4 h-4" /></Button
 							>
 						</CardContent>
