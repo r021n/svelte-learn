@@ -1,20 +1,29 @@
 <script lang="ts">
+	import { notesStore } from '$lib/stores/note';
 	import { Button } from '$lib/components/ui/button/index';
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card/index';
+
+	$: console.log($notesStore);
 </script>
 
-<div class="flex h-screen items-center justify-center bg-slate-50">
-	<Card class="w-[350px]">
-		<CardHeader>
-			<CardTitle>Setup Berhasil</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<p class="mb-4 text-sm text-muted-foreground">
-				Sveltekit + Tailwind v4 + Shadcn siap digunakan
-			</p>
-			<Button class="w-full">Klik Saya</Button>
-		</CardContent>
-	</Card>
+<div class="p-10 space-y-4">
+	<h1 class="font-bold text-lg">Test Logic store</h1>
+
+	<Button onclick={() => notesStore.addNote('Judul test', 'isi catatan', 'personal')}
+		>Tambahkan</Button
+	>
+
+	<Button
+		variant="destructive"
+		onclick={() => {
+			if ($notesStore.length > 0) notesStore.deleteNote($notesStore[0].id);
+		}}
+	>
+		Hapus Note Teratas
+	</Button>
+
+	<pre class="bg-slate-100 p-4 rounded mt-4">
+        {JSON.stringify($notesStore, null, 2)}
+    </pre>
 </div>
 
 <style lang="postcss">
