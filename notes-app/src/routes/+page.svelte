@@ -86,7 +86,9 @@
 					<p class="text-slate-600 text-sm whitespace-pre-line line-clamp-4">{note.content}</p>
 				</CardContent>
 				<CardFooter class="pt-0">
-					<Button variant="outline" size="sm" class="w-full">Lihat Detail</Button>
+					<a href={`/${note.id}`} class="w-full"
+						><Button variant="outline" size="sm" class="w-full">Lihat Detail</Button></a
+					>
 				</CardFooter>
 			</Card>
 		{:else}
