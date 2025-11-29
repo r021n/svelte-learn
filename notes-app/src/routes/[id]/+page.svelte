@@ -9,6 +9,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card, CardTitle, CardHeader, CardContent, CardFooter } from '$lib/components/ui/card';
 
+	import MarkdownPreview from '$lib/components/MarkdownPreview.svelte';
+
 	const noteId = $derived(page.params.id);
 
 	const note = $derived($notesStore.find((n) => n.id == noteId));
@@ -95,10 +97,8 @@
 					</div>
 				</div>
 
-				<div
-					class="prose prose-slate max-w-none whitespace-pre-wrap text-slate-800 leading-relaxed"
-				>
-					{note.content}
+				<div class="min-h-[200px]">
+					<MarkdownPreview content={note.content} />
 				</div>
 			</div>
 		{/if}
