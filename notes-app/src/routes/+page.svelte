@@ -61,6 +61,13 @@
 			minute: '2-digit'
 		});
 	}
+
+	function stripMarkdown(text: string) {
+		return text
+			.replace(/[#*_`]/g, '')
+			.replace(/\[(.*?)\]\(.*?\)/g, '$1')
+			.replace(/\n+/g, ' ');
+	}
 </script>
 
 <main class="container mx-auto py-10 px-4 max-w-5xl">
@@ -151,7 +158,9 @@
 					<CardDescription class="text-xs">{formatDate(note.date)}</CardDescription>
 				</CardHeader>
 				<CardContent class="grow">
-					<p class="text-slate-600 text-sm whitespace-pre-line line-clamp-4">{note.content}</p>
+					<p class="text-slate-600 text-sm whitespace-pre-line line-clamp-4">
+						{stripMarkdown(note.content)}
+					</p>
 				</CardContent>
 				<CardFooter class="pt-0">
 					<a href={`/${note.id}`} class="w-full"
