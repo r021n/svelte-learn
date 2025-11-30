@@ -8,6 +8,17 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card, CardTitle, CardHeader, CardContent, CardFooter } from '$lib/components/ui/card';
+	import {
+		AlertDialog,
+		AlertDialogAction,
+		AlertDialogCancel,
+		AlertDialogContent,
+		AlertDialogDescription,
+		AlertDialogFooter,
+		AlertDialogHeader,
+		AlertDialogTitle,
+		AlertDialogTrigger
+	} from '$lib/components/ui/alert-dialog';
 
 	import MarkdownPreview from '$lib/components/MarkdownPreview.svelte';
 
@@ -19,6 +30,7 @@
 	let editTitle = $state('');
 	let editContent = $state('');
 	let editCategory = $state('');
+	let showDeleteDialog = $state(false);
 
 	function startEdit() {
 		if (!note) return;
@@ -42,10 +54,8 @@
 			return;
 		}
 
-		if (confirm('Apakah anda ingin menghapus catatan ini?')) {
-			notesStore.deleteNote(noteId);
-			goto('/');
-		}
+		notesStore.deleteNote(noteId);
+		goto('/');
 	}
 
 	function cancelEdit() {
@@ -84,7 +94,24 @@
 						<h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100">{note.title}</h1>
 						<div class="flex gap-2">
 							<Button variant="outline" size="sm" onclick={startEdit}>Edit</Button>
-							<Button variant="destructive" size="sm" onclick={handleDelete}>Hapus</Button>
+							<AlertDialog bind:open={showDeleteDialog}>
+								<AlertDialogTrigger>
+									<Button variant="destructive" size="sm">Hapus</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>Hapus Catatan</AlertDialogTitle>
+										<AlertDialogDescription>
+											Apakah anda yakin ingin menghapus catatan "{note.title}"? tindakan ini tidak
+											dapat dibatalkan
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Batal</AlertDialogCancel>
+										<AlertDialogAction onclick={handleDelete}>Hapus</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
 						</div>
 					</div>
 

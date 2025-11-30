@@ -57,16 +57,6 @@
 		category = '';
 	}
 
-	// function formatDate(dateString: string) {
-	// 	return new Date(dateString).toLocaleDateString('id-ID', {
-	// 		day: 'numeric',
-	// 		month: 'short',
-	// 		year: 'numeric',
-	// 		hour: '2-digit',
-	// 		minute: '2-digit'
-	// 	});
-	// }
-
 	function stripMarkdown(text: string) {
 		return text
 			.replace(/[#*_`]/g, '')
