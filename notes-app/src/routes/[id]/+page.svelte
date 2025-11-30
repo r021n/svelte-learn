@@ -81,7 +81,7 @@
 			<div class="space-y-6">
 				<div class="border-b pb-4">
 					<div class="flex justify-between items-start">
-						<h1 class="text-3xl font-bold text-slate-900">{note.title}</h1>
+						<h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100">{note.title}</h1>
 						<div class="flex gap-2">
 							<Button variant="outline" size="sm" onclick={startEdit}>Edit</Button>
 							<Button variant="destructive" size="sm" onclick={handleDelete}>Hapus</Button>

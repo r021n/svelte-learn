@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { fly, fade } from 'svelte/transition';
+	import { flip } from 'svelte/animate';
+
 	import { notesStore } from '$lib/stores/note';
 
 	import { Button } from '$lib/components/ui/button/index';
@@ -13,6 +16,8 @@
 		CardDescription,
 		CardFooter
 	} from '$lib/components/ui/card/index';
+
+	import { cn, timeAgo } from '$lib/utils';
 
 	let title = $state('');
 	let content = $state('');
@@ -52,15 +57,15 @@
 		category = '';
 	}
 
-	function formatDate(dateString: string) {
-		return new Date(dateString).toLocaleDateString('id-ID', {
-			day: 'numeric',
-			month: 'short',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-	}
+	// function formatDate(dateString: string) {
+	// 	return new Date(dateString).toLocaleDateString('id-ID', {
+	// 		day: 'numeric',
+	// 		month: 'short',
+	// 		year: 'numeric',
+	// 		hour: '2-digit',
+	// 		minute: '2-digit'
+	// 	});
+	// }
 
 	function stripMarkdown(text: string) {
 		return text
@@ -72,7 +77,7 @@
 
 <main class="container mx-auto py-10 px-4 max-w-5xl">
 	<div class="mb-8 text-center">
-		<h1 class="text-4xl font-bold tracking-tight text-slate-900">Notes App</h1>
+		<h1 class="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Notes App</h1>
 		<p class="text-slate-500 mt-2">Catat ide-idemu sebelum hilang</p>
 	</div>
 
@@ -149,25 +154,31 @@
 
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 		{#each filteredNotes as note (note.id)}
-			<Card class="flex flex-col h-full hover:shadow-md transition-shadow">
-				<CardHeader class="pb-3">
-					<div class="flex justify-between items-start gap-2">
-						<CardTitle class="text-lg leading-tight">{note.title}</CardTitle>
-						<Badge variant="secondary" class="shrink-0">{note.category}</Badge>
-					</div>
-					<CardDescription class="text-xs">{formatDate(note.date)}</CardDescription>
-				</CardHeader>
-				<CardContent class="grow">
-					<p class="text-slate-600 text-sm whitespace-pre-line line-clamp-4">
-						{stripMarkdown(note.content)}
-					</p>
-				</CardContent>
-				<CardFooter class="pt-0">
-					<a href={`/${note.id}`} class="w-full"
-						><Button variant="outline" size="sm" class="w-full">Lihat Detail</Button></a
-					>
-				</CardFooter>
-			</Card>
+			<div
+				animate:flip={{ duration: 300 }}
+				in:fly={{ y: 20, duration: 300, delay: 100 }}
+				out:fade={{ duration: 200 }}
+			>
+				<Card class="flex flex-col h-full hover:shadow-md transition-shadow">
+					<CardHeader class="pb-3">
+						<div class="flex justify-between items-start gap-2">
+							<CardTitle class="text-lg leading-tight">{note.title}</CardTitle>
+							<Badge variant="secondary" class="shrink-0">{note.category}</Badge>
+						</div>
+						<CardDescription class="text-xs">{timeAgo(note.date)}</CardDescription>
+					</CardHeader>
+					<CardContent class="grow">
+						<p class="text-slate-600 text-sm whitespace-pre-line line-clamp-4">
+							{stripMarkdown(note.content)}
+						</p>
+					</CardContent>
+					<CardFooter class="pt-0">
+						<a href={`/${note.id}`} class="w-full"
+							><Button variant="outline" size="sm" class="w-full">Lihat Detail</Button></a
+						>
+					</CardFooter>
+				</Card>
+			</div>
 		{:else}
 			<div class="col-span-full text-center py-12 text-slate-400">
 				{#if searchQuery || selectedCategory !== 'Semua'}
