@@ -6,7 +6,6 @@
 
 	import { Button } from '$lib/components/ui/button/index';
 	import { Input } from '$lib/components/ui/input/index';
-	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { Badge } from '$lib/components/ui/badge/index';
 	import {
 		Card,
@@ -17,7 +16,8 @@
 		CardFooter
 	} from '$lib/components/ui/card/index';
 
-	import { cn, timeAgo } from '$lib/utils';
+	import { timeAgo } from '$lib/utils';
+	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
 
 	let title = $state('');
 	let content = $state('');
@@ -86,13 +86,18 @@
 							placeholder="Judul Catatan"
 							bind:value={title}
 							class="font-semibold"
+							required
 						/>
 					</div>
 					<div class="space-y-2">
-						<Input type="text" placeholder="Kategori (Opsional)" bind:value={category} />
+						<Input type="text" placeholder="Kategori (Opsional)" bind:value={category} required />
 					</div>
 				</div>
-				<Textarea placeholder="Tulis sesuatu disini" bind:value={content} class="min-h-[100px]" />
+				<MarkdownEditor
+					bind:value={content}
+					placeholder="Tuliskan sesuatu disini..."
+					height="min-h-[150px]"
+				/>
 				<div class="flex justify-end">
 					<Button type="submit" class="cursor-pointer">Simpan Catatan</Button>
 				</div>

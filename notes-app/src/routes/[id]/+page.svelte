@@ -5,7 +5,6 @@
 	import { notesStore } from '$lib/stores/note';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
-	import { Textarea } from '$lib/components/ui/textarea';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Card, CardTitle, CardHeader, CardContent, CardFooter } from '$lib/components/ui/card';
 	import {
@@ -21,6 +20,7 @@
 	} from '$lib/components/ui/alert-dialog';
 
 	import MarkdownPreview from '$lib/components/MarkdownPreview.svelte';
+	import MarkdownEditor from '$lib/components/MarkdownEditor.svelte';
 
 	const noteId = $derived(page.params.id);
 
@@ -80,7 +80,11 @@
 						<Input bind:value={editTitle} placeholder="Judul" />
 						<Input bind:value={editCategory} placeholder="Kategoru" />
 					</div>
-					<Textarea bind:value={editContent} class="min-h-[300px]" placeholder="Isi catatan..." />
+					<MarkdownEditor
+						bind:value={editContent}
+						placeholder="Isi catatan..."
+						height="min-h-[300px]"
+					/>
 				</CardContent>
 				<CardFooter class="flex justify-end gap-2">
 					<Button variant="outline" onclick={cancelEdit}>Batal</Button>
