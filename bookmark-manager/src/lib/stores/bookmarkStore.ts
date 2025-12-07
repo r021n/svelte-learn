@@ -27,3 +27,13 @@ bookmarkStore.subscribe((value) => {
 		console.error('Failed to save bookmark to localstorage', error);
 	}
 });
+
+export function deleteBookmark(id: string) {
+	bookmarkStore.update((items) => items.filter((item) => item.id !== id));
+}
+
+export function updateBookmark(id: string, updates: Partial<Bookmark>) {
+	bookmarkStore.update((items) =>
+		items.map((item) => (item.id === id ? { ...item, ...updates } : item))
+	);
+}
