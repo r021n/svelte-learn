@@ -3,6 +3,7 @@
 
 	import * as Card from '$lib/components/ui/card/index';
 	import { Button } from '$lib/components/ui/button/index';
+	import { Badge } from '$lib/components/ui/badge/index';
 
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Trash2Icon from '@lucide/svelte/icons/trash-2';
@@ -26,18 +27,27 @@
 <Card.Root class="group transition-colors hover:bg-slate-50">
 	<Card.Content class="flex items-center justify-between gap-4 p-4">
 		<div class="flex flex-1 flex-col gap-1 overflow-hidden">
-			<a
-				href={bookmark.url}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="flex items-center gap-1 font-semibold text-lg hover:underline truncate"
-				><span class="truncate">{bookmark.title}</span><ExternalLink
-					class="h-4 w-4 shrink-0 text-slate-400"
-					aria-hidden="true"
-				/></a
-			>
+			<div>
+				<a
+					href={bookmark.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="flex items-center gap-1 font-semibold text-lg hover:underline truncate"
+					><span class="truncate">{bookmark.title}</span><ExternalLink
+						class="h-4 w-4 shrink-0 text-slate-400"
+						aria-hidden="true"
+					/></a
+				>
+				<span class="truncate text-sm text-muted-foreground">{bookmark.url}</span>
+			</div>
 
-			<span class="truncate text-sm text-muted-foreground">{bookmark.url}</span>
+			{#if bookmark.tags.length > 0}
+				<div class="flex flex-wrap gap-2">
+					{#each bookmark.tags as tag}
+						<Badge variant="secondary" class="text-xs font-normal">#{tag}</Badge>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<div

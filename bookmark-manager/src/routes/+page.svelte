@@ -1,6 +1,9 @@
 <script lang="ts">
 	import BookmarkForm from '$lib/components/BookmarkForm.svelte';
 	import BookmarkList from '$lib/components/BookmarkList.svelte';
+	import SearchBar from '$lib/components/SearchBar.svelte';
+
+	let searchQuery = '';
 </script>
 
 <div class="min-h-screen bg-gray-100 px-4 py-10">
@@ -12,6 +15,10 @@
 
 		<BookmarkForm />
 
-		<BookmarkList />
+		<div class="space-y-4">
+			<h2 class="text-xl font-semibold tracking-tight">Daftar Bookmark</h2>
+			<SearchBar bind:query={searchQuery} />
+			<BookmarkList {searchQuery} />
+		</div>
 	</div>
 </div>

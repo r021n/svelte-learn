@@ -17,18 +17,25 @@
 	let open = $state(false);
 	let title = $state('');
 	let url = $state('');
+	let tagsInput = $state('');
 
 	$effect(() => {
 		if (open) {
 			title = bookmark.title;
 			url = bookmark.url;
+			tagsInput = bookmark.tags.join(', ');
 		}
 	});
 
 	function handleSave() {
 		if (!title || !url) return;
 
-		updateBookmark(bookmark.id, { title, url });
+		const tags = tagsInput
+			.split(',')
+			.map((tag) => tag.trim())
+			.filter((tag) => tag !== '');
+
+		updateBookmark(bookmark.id, { title, url, tags });
 
 		open = false;
 	}
@@ -56,6 +63,15 @@
 			<div class="grid grid-cols-4 items-center gap-4">
 				<Label for="edit-url" class="text-right">URL</Label>
 				<Input id="edit-url" bind:value={url} class="col-span-3" />
+			</div>
+			<div class="grid grid-cols-4 items-center gap-4">
+				<Label for="edit-tags" class="text-right">Tags</Label>
+				<Input
+					id="edit-tags"
+					bind:value={tagsInput}
+					class="col-span-3"
+					placeholder="docs, frontend, svelte"
+				/>
 			</div>
 		</div>
 

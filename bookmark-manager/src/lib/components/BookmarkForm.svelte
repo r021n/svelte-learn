@@ -9,17 +9,23 @@
 
 	let title = '';
 	let url = '';
+	let tagsInput = '';
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
 
 		if (!title || !url) return;
 
+		const tags = tagsInput
+			.split(',')
+			.map((tag) => tag.trim())
+			.filter((tag) => tag !== '');
+
 		const newBookmark: Bookmark = {
 			id: crypto.randomUUID(),
 			title,
 			url,
-			tags: [],
+			tags,
 			createdAt: Date.now()
 		};
 
@@ -27,6 +33,7 @@
 
 		title = '';
 		url = '';
+		tagsInput = '';
 	}
 </script>
 
@@ -45,6 +52,11 @@
 			<div class="flex flex-col gap-2">
 				<Label for="url">URL</Label>
 				<Input id="url" type="url" bind:value={url} placeholder="https://..." />
+			</div>
+
+			<div class="flex flex-col gap-2">
+				<Label for="tags">Tags (Pisahkan dengan koma)</Label>
+				<Input id="tags" bind:value={tagsInput} placeholder="docs, frontend, svelte" />
 			</div>
 
 			<Button type="submit" class="w-full">Simpan</Button>
