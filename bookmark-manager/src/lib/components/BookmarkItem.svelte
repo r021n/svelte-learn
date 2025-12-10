@@ -9,13 +9,22 @@
 	import Trash2Icon from '@lucide/svelte/icons/trash-2';
 
 	import EditBookmarkDialog from './EditBookmarkDialog.svelte';
-	import { deleteBookmark } from '$lib/stores/bookmarkStore';
+	import { bookmarkStore, deleteBookmark } from '$lib/stores/bookmarkStore';
 
 	interface Props {
 		bookmark: Bookmark;
 	}
 
 	let { bookmark }: Props = $props();
+
+	function getFaviconUrl(url: string) {
+		try {
+			const domain = new URL(url).hostname;
+			return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+		} catch (error) {
+			return 'https://www.google.com/s2/favicons?domain=google.com';
+		}
+	}
 
 	function handleDelete() {
 		if (confirm('Yakin ingin menghapus bookmark ini?')) {
@@ -26,28 +35,35 @@
 
 <Card.Root class="group transition-colors hover:bg-slate-50">
 	<Card.Content class="flex items-center justify-between gap-4 p-4">
-		<div class="flex flex-1 flex-col gap-1 overflow-hidden">
-			<div>
-				<a
-					href={bookmark.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="flex items-center gap-1 font-semibold text-lg hover:underline truncate"
-					><span class="truncate">{bookmark.title}</span><ExternalLink
-						class="h-4 w-4 shrink-0 text-slate-400"
-						aria-hidden="true"
-					/></a
-				>
-				<span class="truncate text-sm text-muted-foreground">{bookmark.url}</span>
-			</div>
-
-			{#if bookmark.tags.length > 0}
-				<div class="flex flex-wrap gap-2">
-					{#each bookmark.tags as tag}
-						<Badge variant="secondary" class="text-xs font-normal">#{tag}</Badge>
-					{/each}
+		<div class="flex flex-1 gap-3 overflow-hidden">
+			<img
+				src={getFaviconUrl(bookmark.url)}
+				alt="Favicon"
+				class="mt-1 h-10 w-10 shrink-0 rounded-md border bg-white p-1 shadow-sm"
+				loading="lazy"
+			/>
+			<div class="flex flex-col gap-2 overflow-hidden">
+				<div>
+					<a
+						href={bookmark.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex items-center gap-1 font-semibold text-lg hover:underline truncate"
+						><span class="truncate">{bookmark.title}</span><ExternalLink
+							class="h-4 w-4 shrink-0 text-slate-400"
+							aria-hidden="true"
+						/></a
+					>
+					<span class="truncate text-sm text-muted-foreground">{bookmark.url}</span>
 				</div>
-			{/if}
+				{#if bookmark.tags.length > 0}
+					<div class="flex flex-wrap gap-2">
+						{#each bookmark.tags as tag}
+							<Badge variant="secondary" class="text-xs font-normal">#{tag}</Badge>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		</div>
 
 		<div
