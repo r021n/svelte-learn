@@ -1,0 +1,94 @@
+import type {
+  Category,
+  CategoryDraft,
+  Expense,
+  ExpenseDraft,
+} from "$lib/domain/types";
+import {
+  daysInMonth,
+  isoDateFromMonthDay,
+  monthKeyFromISODate,
+  todayISO,
+} from "$lib/domain/date";
+
+function uid(): string {
+  return crypto.randomUUID();
+}
+
+function defaultCategories(): Category[] {
+  return [
+    { id: uid(), name: "Makan", color: "#f97316" },
+    { id: uid(), name: "Transport", color: "#3b82f6" },
+    { id: uid(), name: "Belanja", color: "#a855f7" },
+    { id: uid(), name: "Tagihan", color: "#ef4444" },
+    { id: uid(), name: "Hiburan", color: "#22c55e" },
+    { id: uid(), name: "Lainnya", color: "#64748b" },
+  ];
+}
+
+export class ExpenseStore {
+  expenses = $state<Expense[]>([]);
+  categories = $state<Category[]>(defaultCategories());
+
+  activeMonth = $state(monthKeyFromISODate(todayISO()));
+
+  categoriesById = $derived(
+    Object.fromEntries(
+      this.categories.map((c) => [c.id, c] as const)
+    ) as Record<string, Category>
+  );
+
+  expensesInActiveMonth = $derived.by(() => {
+    const filtered = this.expenses.filter((e) =>
+      e.date.startsWith(this.activeMonth)
+    );
+    return filtered.sort((a, b) => b.createdAt - a.createdAt);
+  });
+
+  totalActiveMonth = $derived(
+    this.expensesInActiveMonth.reduce((sum, e) => sum + e.amount, 0)
+  );
+
+  totalByCategoryActiveMonth = $derived.by(() => {
+    const totals: Record<string, number> = {};
+
+    for (const e of this.expensesInActiveMonth) {
+      totals[e.categoryId] = (totals[e.categoryId] ?? 0) + e.amount;
+    }
+
+    return Object.entries(totals)
+      .map(([categoryId, total]) => ({
+        categoryId,
+        total,
+        category: this.categoriesById[categoryId],
+      }))
+      .sort((a, b) => b.total - a.total);
+  });
+
+  dailyTotalsActiveMonth = $derived.by(() => {
+    const days = daysInMonth(this.activeMonth);
+    const byDate: Record<string, number> = {};
+
+    for (const e of this.expensesInActiveMonth) {
+      byDate[e.date] = (byDate[e.date] ?? 0) + e.amount;
+    }
+
+    return Array.from({ length: days }, (_, i) => {
+      const date = isoDateFromMonthDay(this.activeMonth, i + 1);
+      return { date, total: byDate[date] ?? 0 };
+    });
+  });
+
+  monthlyTotals = $derived.by(() => {
+    const totals: Record<string, number> = {};
+    for (const e of this.expenses) {
+      const monthKey = monthKeyFromISODate(e.date);
+      totals[monthKey] = (totals[monthKey] ?? 0) + e.amount;
+    }
+    return Object.entries(totals)
+      .map(([month, total]) => ({ month, total }))
+      .sort((a, b) => a.month.localeCompare(b.month));
+  });
+
+  // ---- domain actions (CRUD) ----
+}
