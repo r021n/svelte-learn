@@ -91,4 +91,45 @@ export class ExpenseStore {
   });
 
   // ---- domain actions (CRUD) ----
+
+  addExpense(draft: ExpenseDraft) {
+    const now = Date.now();
+    const expense: Expense = {
+      ...draft,
+      id: uid(),
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.expenses = [expense, ...this.expenses];
+  }
+
+  updateExpense(id: string, patch: Partial<ExpenseDraft>) {
+    const now = Date.now();
+    this.expenses = this.expenses.map((e) =>
+      e.id === id ? { ...e, ...patch, updatedAt: now } : e
+    );
+  }
+
+  deleteExpense(id: string) {
+    this.expenses = this.expenses.filter((e) => e.id !== id);
+  }
+
+  addCategory(draft: CategoryDraft) {
+    const category: Category = { id: uid(), ...draft };
+    this.categories = [...this.categories, category];
+  }
+
+  renameCategory(id: string, name: string) {
+    this.categories = this.categories.map((c) =>
+      c.id === id ? { ...c, name } : c
+    );
+  }
+
+  deleteCategory(id: string) {
+    const stillUsed = this.expenses.some((e) => e.categoryId === id);
+    if (stillUsed) return;
+
+    this.categories = this.categories.filter((c) => c.id !== id);
+  }
 }
