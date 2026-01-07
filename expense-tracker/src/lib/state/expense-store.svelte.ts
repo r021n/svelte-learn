@@ -27,6 +27,8 @@ function defaultCategories(): Category[] {
 }
 
 export class ExpenseStore {
+  hydrated = $state(false);
+
   expenses = $state<Expense[]>([]);
   categories = $state<Category[]>(defaultCategories());
 
@@ -89,6 +91,15 @@ export class ExpenseStore {
       .map(([month, total]) => ({ month, total }))
       .sort((a, b) => a.month.localeCompare(b.month));
   });
+
+  // --- hydration helper ---
+  hydrate(data: { expenses: Expense[]; categories: Category[] }) {
+    this.expenses = Array.isArray(data.expenses) ? data.expenses : [];
+    this.categories =
+      Array.isArray(data.categories) && data.categories.length > 0
+        ? data.categories
+        : defaultCategories();
+  }
 
   // ---- domain actions (CRUD) ----
 
