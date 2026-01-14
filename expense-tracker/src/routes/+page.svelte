@@ -11,6 +11,7 @@
 	import ExpenseForm from '$lib/components/expenses/ExpenseForm.svelte';
 
 	const store = getExpenseStore();
+	let editingId = $state<string | null>(null);
 
 	const recent = $derived(store.expensesInActiveMonth.slice(0, 10));
 
@@ -97,9 +98,15 @@
 
 								<Table.Cell class="text-end">
 									<div class="inline-flex gap-2">
-										<Dialog.Root>
-											<Dialog.Trigger class={buttonVariants({ variant: 'outline', size: 'sm' })}
-												>Edit</Dialog.Trigger
+										<Dialog.Root
+											open={editingId === e.id}
+											onOpenChange={(open) => {
+												if (!open) editingId = null;
+											}}
+										>
+											<Dialog.Trigger
+												class={buttonVariants({ variant: 'outline', size: 'sm' })}
+												onclick={() => (editingId = e.id)}>Edit</Dialog.Trigger
 											>
 
 											<Dialog.Content class="sm:max-w-130">
@@ -116,8 +123,11 @@
 														note: e.note
 													}}
 													submitLabel="Simpan Perubahan"
-													onSubmit={(draft) => store.updateExpense(e.id, draft)}
-													onCancel={() => {}}
+													onSubmit={(draft) => {
+														store.updateExpense(e.id, draft);
+														editingId = null;
+													}}
+													onCancel={() => (editingId = null)}
 												/>
 											</Dialog.Content>
 										</Dialog.Root>
